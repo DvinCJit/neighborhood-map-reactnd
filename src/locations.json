@@ -1,0 +1,37 @@
+[
+    {
+        "title": "Demachi Futaba", 
+        "location": {
+            "lat": "35.0301", 
+            "lng": "135.769618"
+        }
+    },
+    {
+        "title": "Fushimi Inari-taisha", 
+        "location": {
+            "lat": "34.966822", 
+            "lng": "135.772721"
+        }
+    },
+    {
+        "title": "Kiyomizu-dera", 
+        "location": {
+            "lat": "34.994825", 
+            "lng": "135.784909"
+        }
+    },
+    {
+        "title": "Nara Park", 
+        "location": {
+            "lat": "34.685047", 
+            "lng": "135.843012"
+        }
+    },
+    {
+        "title": "Tōdai-ji", 
+        "location": {
+            "lat": "34.688966", 
+            "lng": "135.839691"
+        }
+    },
+]

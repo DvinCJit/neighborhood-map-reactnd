@@ -27,4 +27,4 @@
   to { transform: rotate(360deg); }
 }
 
-#mapid { height: 100vh; }
+#mapid { height: calc(100vh - 190px ); }
