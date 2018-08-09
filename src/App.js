@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import L from 'leaflet';
+//import L from 'leaflet';
 import MapContainer from './MapContainer';
 // import locations from './locations.json';
+import ListView from './ListView'
 
 const allLocations = [
         {title: 'Demachi Futaba', position: {lat: 35.0301, lng: 135.769618}},
@@ -12,16 +12,16 @@ const allLocations = [
         {title: 'Kiyomizu-dera', position: {lat: 34.994825, lng: 135.784909}},
         {title: 'Nara Park', position: {lat: 34.685047, lng: 135.843012}}
     ]
-    
+
 class App extends Component {
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Neighborhood Map</h1>
+          <h1 className="App-title">NARA & KYOTO</h1>
         </header>
         <MapContainer allLocations={allLocations} />
+        <ListView allLocations={allLocations}/>
       </div>
     );
   }

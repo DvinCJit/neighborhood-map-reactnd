@@ -9,7 +9,7 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 50px;
   padding: 20px;
   color: white;
 }
@@ -27,4 +27,27 @@
   to { transform: rotate(360deg); }
 }
 
-#mapid { height: calc(100vh - 190px ); }
+#mapid { 
+  height: calc(100vh - 90px ); 
+  width: calc(100vw - 90px);
+  margin-left: 190px;
+}
+
+.list-view {
+  width: 190px;
+  height: 100vh;
+  position: fixed;
+  background: #315cb4;
+  z-index: 1;
+  top: 90px;
+}
+
+.locations-list {
+  list-style-type: none;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.search-locations {
+  margin-top: 10px;
+}
