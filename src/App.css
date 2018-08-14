@@ -28,14 +28,14 @@
 }
 
 #mapid { 
-  height: calc(100vh - 90px ); 
+  height: calc(100vh - 107px); 
   width: calc(100vw - 90px);
   margin-left: 190px;
 }
 
 .list-view {
   width: 190px;
-  height: 100vh;
+  height: calc(100vh - 107px);
   position: fixed;
   background: #315cb4;
   z-index: 1;

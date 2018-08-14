@@ -16,11 +16,13 @@ class MapContainer extends Component {
           accessToken: 'pk.eyJ1IjoianVkaXRocm4iLCJhIjoiY2pqZWZhaWh5Mm83ZjNxbW14YjYwY3BvdSJ9.dzLHt6jQRGlNH9jFAdhkbg'
         }).addTo(myMap);
 
-        let marker;
         const markers = this.props.allLocations.map(location => {
-            marker = new L.marker([location.position.lat, location.position.lng]).addTo(myMap);
+            const marker = new L.marker([location.position.lat, location.position.lng]).addTo(myMap);
             marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+            return marker;
         })
+
+        console.log('Markers:', markers)
     }
 
     render() {
