@@ -42,15 +42,16 @@ class App extends Component {
     const matchedMarker = this.state.markers.find(m => title === m.options.title);
     // console.log('data title:',this.state.data);
     // console.log(marker.options.title);
-
-    let matchedDataList, textList, matchedData, text;
+    let matchedDataList, textList, matchedData, text, source, src;
     if (matchedMarker) {
       matchedDataList = this.state.data.find(i => i.title === title);
       textList = matchedDataList.text;
+      src = '<a href="https://en.wikipedia.org/wiki/' + title + '"target="_blank">Source</a>';
       // console.log(matchedDataList);
     } else if (marker) {
       matchedData = this.state.data.find(item => item.title === marker.options.title);
       text = matchedData.text;
+      source = '<a href="https://en.wikipedia.org/wiki/' + marker.options.title + '"target="_blank">Source</a>';
       // console.log(text);
     }
   
@@ -58,7 +59,7 @@ class App extends Component {
       if(marker && marker._leaflet_id === this.state.prevMarker._leaflet_id)
         return;
       if(matchedMarker && matchedMarker._leaflet_id === this.state.prevMarker._leaflet_id) {
-        matchedMarker.bindPopup(textList).openPopup();
+        matchedMarker.bindPopup(textList + '<br>' + src).openPopup();
         return;
       }
         
@@ -73,14 +74,14 @@ class App extends Component {
     if(matchedMarker) {
       this.setState({prevMarker: matchedMarker});
       // console.log('matchedMarker data:', this.state.data);
-      matchedMarker.bindPopup(textList).openPopup();
+      matchedMarker.bindPopup(textList + '<br>' + src).openPopup();
       matchedMarker._icon.style.width = '34px';
       matchedMarker._icon.style.height = '50px';
       matchedMarker._icon.style.filter = 'hue-rotate(160deg)'; 
     } else if(marker) {
       // console.log('handle click', this.state.data);
       this.setState({prevMarker: marker});
-      marker.bindPopup(text);
+      marker.bindPopup(text + '<br>' + source);
       marker._icon.style.width = '34px';
       marker._icon.style.height = '50px';
       marker._icon.style.filter = 'hue-rotate(160deg)';
