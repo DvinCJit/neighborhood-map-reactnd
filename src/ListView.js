@@ -41,7 +41,7 @@ class ListView extends Component {
     // }
 
     handleOnMouseOver = (title) => {
-        console.log('mouseover:', title);
+        // console.log('mouseover:', title);
         title.style.fontSize = '20px';
     }
 
@@ -53,7 +53,7 @@ class ListView extends Component {
         const {markers, allLocations, handleClick} = this.props;
         const {query} = this.state;
         let filteredPlaces;
-        console.log(this.props.markers);
+        // console.log(this.props.markers);
         // this.props.markers.forEach(marker => console.log(marker.options.title));
         /* Filtering with RegExps as explained in the Udacity FEND course here: 
         https://github.com/udacity/reactnd-contacts-complete */
@@ -64,7 +64,7 @@ class ListView extends Component {
             filteredPlaces = allLocations;
         }
 
-        console.log(filteredPlaces);
+        // console.log(filteredPlaces);
         return (
             <div className='list-view'>
                 <input 
