@@ -2,23 +2,61 @@ import React, { Component } from 'react';
 import './App.css';
 import L from 'leaflet';
 import ListView from './ListView'
+import { allLocations, mapboxAPITiles, mapboxAccessToken, fetchTiles, fetchWiki } from './constants';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      allLocations: [
-        {title: 'Fushimi Inari-taisha', position: {lat: 34.966822, lng: 135.772721}},
-        {title: 'Kiyomizu-dera', position: {lat: 34.994825, lng: 135.784909}},
-        {title: 'Kōzan-ji', position: {lat: 35.060552, lng: 135.678453}},
-        {title: 'Mount Kurama', position: {lat: 35.123135, lng: 135.776261}},
-        {title: 'Ponto-chō', position: {lat: 35.005107, lng: 135.770954}}
-      ],
+      allLocations,
       markers: [],
       prevMarker: null,
       data: []
     }
+  }
+
+  // Create markers and load API data
+
+  componentWillMount() {
+    const markers = this.state.allLocations.map(location => new L.marker(
+      [location.position.lat, location.position.lng], 
+      {title: location.title, alt: location.title}));
+    this.setState({markers});
+
+    this.state.allLocations.forEach(loc => {
+      let title = loc.title;
+      this.getData(title);
+    });
+  }
+    
+  // Initialize map, markers and popups
+
+  componentDidMount() {  
+    const myMap = L.map('mapid', {
+      center: [35.0517, 135.772057],
+      zoom: 11
+    });
+    L.tileLayer(mapboxAPITiles + '/v4/{id}/{z}/{x}/{y}.png?' + mapboxAccessToken, {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> '
+      + 'contributors<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,' 
+      + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox.streets',
+      accessToken: mapboxAccessToken
+    }).addTo(myMap)
+    // Solution: https://stackoverflow.com/questions/24342683/leaflet-tile-loading-error-event
+    .on('tileerror', (error) => {
+      console.log(error);
+      window.alert('No network connection. We were unable to access the map tile layer');
+    });
+
+    this.state.markers.forEach(marker => {
+      marker.addTo(myMap);
+      marker.bindPopup();
+      marker.addEventListener('click', this.handleClick);
+      marker.addEventListener('keypress', this.handleClick);
+    })  
   }
 
   /*
@@ -28,13 +66,14 @@ class App extends Component {
   */
 
   getData(title) {
-    fetch(`https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=${title.replace(/\s/g, '_')}&exsentences=1&exlimit=1&origin=*`).then(r => r.json())
+    fetch(fetchWiki(title))
+    .then(r => r.json())
     .then(r => {
-      let content = r.query.pages[Object.keys(r.query.pages)[0]];
-      let extract = content.extract;
-      let parser = new DOMParser();
-      let html = parser.parseFromString(extract, 'text/html');
-      let text = {
+      const content = r.query.pages[Object.keys(r.query.pages)[0]];
+      const extract = content.extract;
+      const parser = new DOMParser();
+      const html = parser.parseFromString(extract, 'text/html');
+      const text = {
         title: title,
         text: html.querySelector('body p').innerHTML
       };
@@ -42,7 +81,7 @@ class App extends Component {
       this.setState(prevState => ({data: [...prevState.data, text]}));
     }).catch((error) => {
       console.log('Request error', error);
-      window.alert('Sorry! Data could not be loaded.');
+      window.alert('Sorry! Data could not be loaded. Check your internet connection and try again.');
     })
   }
 
@@ -133,51 +172,13 @@ class App extends Component {
     }
   }
 
-  // Create markers and load API data
-
-  componentWillMount() {
-    const markers = this.state.allLocations.map(location => new L.marker(
-      [location.position.lat, location.position.lng], 
-      {title: location.title, alt: location.title}));
-    this.setState({markers});
-
-    this.state.allLocations.forEach(loc => {
-      let title = loc.title;
-      this.getData(title);
-    });
-  }
-    
-  // Initialize map, markers and popups
-
-  componentDidMount() {  
-    const myMap = L.map('mapid', {
-      center: [35.0517, 135.772057],
-      zoom: 11
-    });
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoianVkaXRocm4iLCJhIjoiY2pqZWZhaWh5Mm83ZjNxbW14YjYwY3BvdSJ9.dzLHt6jQRGlNH9jFAdhkbg', {
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      maxZoom: 18,
-      id: 'mapbox.streets',
-      accessToken: 'pk.eyJ1IjoianVkaXRocm4iLCJhIjoiY2pqZWZhaWh5Mm83ZjNxbW14YjYwY3BvdSJ9.dzLHt6jQRGlNH9jFAdhkbg'
-    }).addTo(myMap);
-
-    this.state.markers.forEach(marker => {
-      marker.addTo(myMap);
-      marker.bindPopup();
-      marker.addEventListener('click', this.handleClick);
-      marker.addEventListener('keypress', this.handleClick);
-    })  
-  }
-
   render() {
     return (
       <div className="App">
         <header className="App-header" role="banner">
-          <nav>
             <h1 className="App-title">
-              <a href="/">Neighborhood Map - Kyoto, Japan</a>
+              Neighborhood Map - Kyoto, Japan
             </h1>
-          </nav>
         </header>
         <div id="mapid" role="application" aria-label="neighborhood-map"></div>
         <ListView handleClick={this.handleClick} markers={this.state.markers} allLocations={this.state.allLocations}/>
